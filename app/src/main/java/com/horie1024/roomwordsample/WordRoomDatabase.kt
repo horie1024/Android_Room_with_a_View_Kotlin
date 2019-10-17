@@ -23,11 +23,8 @@ abstract class WordRoomDatabase : RoomDatabase() {
             context: Context,
             scope: CoroutineScope
         ): WordRoomDatabase {
-            val tempInstance = INSTANCE
-            if (tempInstance != null) {
-                return tempInstance
-            }
-            synchronized(this) {
+
+            return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     WordRoomDatabase::class.java,
@@ -36,7 +33,7 @@ abstract class WordRoomDatabase : RoomDatabase() {
                     .addCallback(WordDatabaseCallback(scope))
                     .build()
                 INSTANCE = instance
-                return instance
+                instance
             }
         }
     }
